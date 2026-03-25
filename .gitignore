@@ -3,3 +3,8 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+CLAUDE.md
+plan.md
+progress.md
+reflection.md
+profile_data.json
