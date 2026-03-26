@@ -151,6 +151,119 @@
             </div>
         </div>
 
+        <!-- Common Application Questions -->
+        <div class="form-section">
+            <h2>Application Questions</h2>
+            <div class="field">
+                <label for="work_auth">Are you legally authorized to work in the United Kingdom?</label>
+                <select id="work_auth" name="workAuth">
+                    <option value="">-- Select --</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="sponsorship">Will you now or in the future require sponsorship for employment visa status?</label>
+                <select id="sponsorship" name="sponsorship">
+                    <option value="">-- Select --</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="worked_before">Have you worked at Acme Corp previously?</label>
+                <select id="worked_before" name="workedBefore">
+                    <option value="">-- Select --</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="veteran">Protected Veteran Status</label>
+                <select id="veteran" name="veteranStatus">
+                    <option value="">-- Select --</option>
+                    <option value="veteran">I am a protected veteran</option>
+                    <option value="not_veteran">I am not a protected veteran</option>
+                    <option value="decline">I don't wish to answer</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="disability">Disability Status</label>
+                <select id="disability" name="disabilityStatus">
+                    <option value="">-- Select --</option>
+                    <option value="yes">Yes, I have a disability</option>
+                    <option value="no">No, I don't have a disability</option>
+                    <option value="decline">I don't wish to answer</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Custom Dropdown Test (Step 7) -->
+        <div class="form-section">
+            <h2>Custom Dropdown (Detection Test)</h2>
+            <div class="field">
+                <label id="custom-country-label">Country (Custom Dropdown)</label>
+                <div class="custom-select"
+                     role="combobox"
+                     aria-expanded="false"
+                     aria-haspopup="listbox"
+                     aria-labelledby="custom-country-label"
+                     aria-label="country"
+                     tabindex="0"
+                     id="custom_country">
+                    <span class="custom-select-value">-- Select Country --</span>
+                    <ul class="custom-select-options" role="listbox" style="display: none;">
+                        <li role="option" data-value="US">United States</li>
+                        <li role="option" data-value="UK">United Kingdom</li>
+                        <li role="option" data-value="CA">Canada</li>
+                        <li role="option" data-value="AU">Australia</li>
+                        <li role="option" data-value="DE">Germany</li>
+                    </ul>
+                </div>
+            </div>
+            <style>
+                .custom-select { position: relative; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 8px; cursor: pointer; background: #fff; }
+                .custom-select[aria-expanded="true"] { border-color: #007aff; box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
+                .custom-select-options { list-style: none; position: absolute; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #d1d1d6; border-radius: 8px; margin-top: 4px; padding: 4px 0; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+                .custom-select-options li { padding: 8px 12px; cursor: pointer; font-size: 14px; }
+                .custom-select-options li:hover { background: #f0f0f5; }
+                .custom-select-options li[aria-selected="true"] { background: #007aff; color: #fff; }
+            </style>
+            <script>
+                // Custom dropdown behavior
+                document.querySelectorAll('.custom-select').forEach(select => {
+                    const valueDisplay = select.querySelector('.custom-select-value');
+                    const optionsList = select.querySelector('.custom-select-options');
+                    const options = select.querySelectorAll('[role="option"]');
+
+                    select.addEventListener('click', () => {
+                        const expanded = select.getAttribute('aria-expanded') === 'true';
+                        select.setAttribute('aria-expanded', !expanded);
+                        optionsList.style.display = expanded ? 'none' : 'block';
+                    });
+
+                    options.forEach(option => {
+                        option.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            options.forEach(o => o.removeAttribute('aria-selected'));
+                            option.setAttribute('aria-selected', 'true');
+                            valueDisplay.textContent = option.textContent;
+                            select.setAttribute('aria-expanded', 'false');
+                            optionsList.style.display = 'none';
+                        });
+                    });
+
+                    // Close on Escape
+                    select.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            select.setAttribute('aria-expanded', 'false');
+                            optionsList.style.display = 'none';
+                        }
+                    });
+                });
+            </script>
+        </div>
+
         <!-- Edge Cases: test detection with different signal types -->
         <div class="form-section">
             <h2>Edge Case Fields (Detection Test)</h2>

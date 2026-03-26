@@ -4,19 +4,27 @@
  * Pattern map: profile field name → regex to match against signals.
  */
 const FIELD_PATTERNS = {
-    firstName:    /first.?name|given.?name|fname|prénom/i,
-    lastName:     /last.?name|sur.?name|family.?name|lname/i,
-    email:        /e.?mail/i,
-    phone:        /phone|mobile|tel(?:ephone)?|contact.?number/i,
-    addressLine1: /address.?(line.?1|1)|street|address(?!.*(2|city|post|zip|state|country))/i,
-    city:         /city|town|municipality|location.?\(city\)|location/i,
-    postalCode:   /post.?code|zip.?code|postal/i,
-    country:      /country|nation/i,
-    linkedinUrl:  /linkedin|linked.?in/i,
-    howDidYouHear:/how.*(hear|find|learn|know)|referral.?source|source/i,
-    gender:       /gender|sex(?!ual)/i,
-    ethnicGroup:  /ethnic|race|ethnicity/i,
-    ageGroup:     /age.?(group|range|bracket)|date.?of.?birth/i,
+    firstName:      /first.?name|given.?name|fname|prénom/i,
+    lastName:       /last.?name|sur.?name|family.?name|lname/i,
+    email:          /e.?mail/i,
+    phone:          /phone|mobile|tel(?:ephone)?|contact.?number/i,
+    addressLine1:   /address.?(line.?1|1)|street|address(?!.*(2|city|post|zip|state|country))/i,
+    city:           /city|town|municipality|location.?\(city\)|location/i,
+    postalCode:     /post.?code|zip.?code|postal/i,
+    country:        /country|nation/i,
+    linkedinUrl:    /linkedin|linked.?in/i,
+    howDidYouHear:  /how.*(hear|find|learn|know)|referral.?source|source/i,
+    gender:         /(?<!trans)gender|sex(?!ual)/i,
+    ethnicGroup:    /ethnic|race|ethnicity/i,
+    age:            /age.?(group|range|bracket)|date.?of.?birth/i,
+    // Common application questions (answered automatically)
+    workAuth:         /legally\s+authorized.*work|authorized\s+to\s+work|right\s+to\s+work|work\s+authoriz/i,
+    sponsorship:      /require.*sponsor|need.*sponsor|sponsor.*require|visa\s+sponsor|will\s+you.*sponsor/i,
+    workedBefore:     /have\s+you\s+(worked|been\s+employed)\s+(at|for|with)|previously\s+(worked|employed)/i,
+    veteranStatus:    /veteran|protected\s+veteran/i,
+    disabilityStatus: /disability|disabled/i,
+    privacyAck:       /privacy\s+(acknowledge?ment|policy|notice|statement)/i,
+    transgender:      /transgender|trans\s+gender|identify.*transgender/i,
 };
 
 /**

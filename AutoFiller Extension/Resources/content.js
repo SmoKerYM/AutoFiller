@@ -3,37 +3,43 @@
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'autofill') {
-        console.log('[AutoFiller] Received autofill message with profile data:', Object.keys(message.data));
-
-        const profile = message.data;
-        const result = { filled: [], skipped: [], notFound: [] };
-
-        // 1. Detect fields on the page
-        const fieldMap = detectAllFields();
-        console.log(`[AutoFiller] Detected ${fieldMap.size} fields`);
-
-        // 2. Fill text inputs (Step 6)
-        const textResults = fillDetectedFields(fieldMap, profile);
-        result.filled.push(...textResults.filled);
-        result.skipped.push(...textResults.skipped);
-
-        // 3. Fill dropdowns (Step 7 — not yet implemented, skipped fields reported above)
-
-        // 4. Report profile fields not found on the page
-        const foundFields = new Set(
-            [...result.filled, ...result.skipped].map(r => r.field)
-        );
-        const profileFields = Object.keys(profile).filter(k => profile[k] && k !== 'customFields');
-        for (const field of profileFields) {
-            if (!foundFields.has(field)) {
-                result.notFound.push({ field });
-            }
-        }
-
-        console.log('[AutoFiller] Results:', result);
-        sendResponse(result);
-        return true;
+        handleAutofill(message.data).then(sendResponse);
+        return true; // Keep message channel open for async response
     }
 });
+
+async function handleAutofill(profile) {
+    console.log('[AutoFiller] Starting autofill...', Object.keys(profile));
+    const result = { filled: [], skipped: [], notFound: [] };
+
+    // 1. Detect fields on the page
+    const fieldMap = detectAllFields();
+    console.log(`[AutoFiller] Detected ${fieldMap.size} fields`);
+
+    // 2. Fill text inputs
+    const textResults = fillDetectedFields(fieldMap, profile);
+    result.filled.push(...textResults.filled);
+    result.skipped.push(...textResults.skipped);
+
+    // 3. Fill dropdowns (native <select> and custom)
+    const dropdownResults = await fillDropdowns(fieldMap, profile);
+    result.filled.push(...dropdownResults.filled);
+    result.skipped.push(...dropdownResults.skipped);
+
+    // 4. Report profile fields not found on the page
+    const foundFields = new Set(
+        [...result.filled, ...result.skipped].map(r => r.field)
+    );
+    const QUESTION_FIELDS = new Set(['workAuth', 'sponsorship', 'workedBefore', 'veteranStatus', 'disabilityStatus', 'privacyAck', 'transgender']);
+    const profileFields = Object.keys(profile).filter(k => profile[k] && k !== 'customFields' && !QUESTION_FIELDS.has(k));
+    for (const field of profileFields) {
+        if (!foundFields.has(field)) {
+            result.notFound.push({ field });
+        }
+    }
+
+    console.log('[AutoFiller] Results:', result);
+    return result;
+}
 
 console.log('[AutoFiller] Content script loaded.');

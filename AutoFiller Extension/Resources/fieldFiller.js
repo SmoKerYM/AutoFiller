@@ -48,17 +48,23 @@ function fillDetectedFields(fieldMap, profile) {
 
     for (const [element, detection] of fieldMap) {
         const { fieldType } = detection;
+
+        // Skip <select> elements — handled by dropdownHandler
+        if (element.tagName === 'SELECT') {
+            continue;
+        }
+
+        // Skip question-answer fields — handled by dropdownHandler
+        const QUESTION_FIELD_TYPES = ['workAuth', 'sponsorship', 'workedBefore', 'veteranStatus', 'disabilityStatus', 'privacyAck', 'transgender'];
+        if (QUESTION_FIELD_TYPES.includes(fieldType)) {
+            continue;
+        }
+
         const value = profile[fieldType];
 
         // Skip if no value in profile for this field
         if (!value) {
             skipped.push({ field: fieldType, reason: 'No value in profile' });
-            continue;
-        }
-
-        // Skip <select> elements — handled by dropdownHandler in Step 7
-        if (element.tagName === 'SELECT') {
-            skipped.push({ field: fieldType, reason: 'Dropdown — handled separately' });
             continue;
         }
 

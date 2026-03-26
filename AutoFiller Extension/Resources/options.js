@@ -13,7 +13,7 @@ const DEFAULTS = {
     howDidYouHear: 'LinkedIn',
     gender: 'Male',
     ethnicGroup: 'Asian - Chinese',
-    ageGroup: '',
+    age: '',
     customFields: []
 };
 
@@ -21,7 +21,7 @@ const FIELD_IDS = [
     'firstName', 'lastName', 'email', 'phone',
     'addressLine1', 'city', 'postalCode', 'country',
     'linkedinUrl',
-    'howDidYouHear', 'gender', 'ethnicGroup', 'ageGroup'
+    'howDidYouHear', 'gender', 'ethnicGroup', 'age'
 ];
 
 document.addEventListener('DOMContentLoaded', init);
