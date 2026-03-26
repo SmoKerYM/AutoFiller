@@ -3,9 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup.css">
-    <script type="module" src="popup.js"></script>
 </head>
 <body>
-    <strong>Hello World!</strong>
+    <div class="header">
+        <h1>AutoFiller</h1>
+        <p class="subtitle">Job application autofill</p>
+    </div>
+
+    <div id="no-profile" class="message" hidden>
+        <p>No profile saved yet.</p>
+        <a href="#" id="setup-link">Set up your profile first</a>
+    </div>
+
+    <div id="main-content">
+        <button id="autofill-btn" class="primary-btn">Autofill Now</button>
+        <div id="status" class="status" hidden></div>
+    </div>
+
+    <div id="results" class="results" hidden>
+        <div id="filled-section" class="result-section" hidden>
+            <h3 class="result-title filled-title">Filled</h3>
+            <ul id="filled-list"></ul>
+        </div>
+        <div id="skipped-section" class="result-section" hidden>
+            <h3 class="result-title skipped-title">Skipped</h3>
+            <ul id="skipped-list"></ul>
+        </div>
+        <div id="not-found-section" class="result-section" hidden>
+            <h3 class="result-title not-found-title">Not found on page</h3>
+            <ul id="not-found-list"></ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="#" id="settings-link">Settings</a>
+    </div>
+
+    <script src="popup.js"></script>
 </body>
 </html>
