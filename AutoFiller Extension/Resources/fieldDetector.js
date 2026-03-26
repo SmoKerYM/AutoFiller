@@ -18,8 +18,8 @@ const FIELD_PATTERNS = {
     ethnicGroup:    /ethnic|race|ethnicity/i,
     age:            /age.?(group|range|bracket)|date.?of.?birth/i,
     // Common application questions (answered automatically)
-    workAuth:         /legally\s+authorized.*work|authorized\s+to\s+work|right\s+to\s+work|work\s+authoriz/i,
-    sponsorship:      /require.*sponsor|need.*sponsor|sponsor.*require|visa\s+sponsor|will\s+you.*sponsor/i,
+    workAuth:         /legally\s+authorized.*work|authorized\s+to\s+work|right\s+to\s+work/i,
+    sponsorship:      /require.*sponsor|need.*sponsor|sponsor.*require|visa\s+sponsor|will\s+you.*sponsor|immigration.*sponsor|sponsor.*immigration|sponsor.*employ|immigration.*work\s+authoriz/i,
     workedBefore:     /have\s+you\s+(worked|been\s+employed)\s+(at|for|with)|previously\s+(worked|employed)/i,
     veteranStatus:    /veteran|protected\s+veteran/i,
     disabilityStatus: /disability|disabled/i,
@@ -164,7 +164,12 @@ function detectAllFields() {
     const elements = document.querySelectorAll('input, textarea, select');
 
     // Track which fieldTypes are already assigned (keep highest confidence)
+    // Question fields allow multiple elements (e.g., two sponsorship questions)
     const bestByFieldType = new Map();
+    const QUESTION_FIELD_TYPES = new Set([
+        'workAuth', 'sponsorship', 'workedBefore', 'veteranStatus',
+        'disabilityStatus', 'privacyAck', 'transgender',
+    ]);
 
     for (const element of elements) {
         // Skip hidden, submit, button, file, and checkbox/radio inputs
@@ -181,14 +186,18 @@ function detectAllFields() {
         const result = scoreElement(element);
         if (!result) continue;
 
-        const existing = bestByFieldType.get(result.fieldType);
-        if (!existing || result.confidence > existing.confidence) {
-            // Remove previous element for this fieldType if any
-            if (existing) {
-                fieldMap.delete(existing.element);
-            }
+        // Question fields: allow multiple elements (don't deduplicate)
+        if (QUESTION_FIELD_TYPES.has(result.fieldType)) {
             fieldMap.set(element, result);
-            bestByFieldType.set(result.fieldType, { ...result, element });
+        } else {
+            const existing = bestByFieldType.get(result.fieldType);
+            if (!existing || result.confidence > existing.confidence) {
+                if (existing) {
+                    fieldMap.delete(existing.element);
+                }
+                fieldMap.set(element, result);
+                bestByFieldType.set(result.fieldType, { ...result, element });
+            }
         }
 
         console.log(

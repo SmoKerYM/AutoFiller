@@ -120,18 +120,49 @@ body {
 .not-found-title { color: #86868b; }
 .not-found-title::before { content: "?"; font-weight: 700; }
 
+.results-summary {
+    font-size: 12px;
+    font-weight: 600;
+    color: #86868b;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.no-fields {
+    font-size: 12px;
+    color: #86868b;
+    text-align: center;
+    padding: 8px 0;
+}
+
 .result-section ul {
     list-style: none;
     padding-left: 18px;
 }
 
-.result-section li {
+.result-item {
     font-size: 12px;
-    color: #3a3a3c;
-    padding: 1px 0;
+    padding: 2px 0;
+    padding-left: 16px;
+    position: relative;
 }
 
-.result-section li .reason {
+.result-item::before {
+    position: absolute;
+    left: 0;
+    font-size: 11px;
+}
+
+.filled-item { color: #1d1d1f; }
+.filled-item::before { content: "\2713"; color: #34c759; font-weight: 700; }
+
+.skipped-item { color: #3a3a3c; }
+.skipped-item::before { content: "\26A0"; color: #ff9500; }
+
+.not-found-item { color: #86868b; }
+.not-found-item::before { content: "\2014"; color: #86868b; }
+
+.result-item .reason {
     color: #86868b;
     font-style: italic;
 }
@@ -153,7 +184,7 @@ body {
         border-top-color: #38383a;
     }
 
-    .result-section li {
-        color: #d1d1d6;
-    }
+    .filled-item { color: #f5f5f7; }
+    .skipped-item { color: #d1d1d6; }
+    .not-found-item { color: #8e8e93; }
 }

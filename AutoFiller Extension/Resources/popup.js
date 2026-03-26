@@ -21,6 +21,14 @@ setupLink.addEventListener('click', (e) => {
     openOptions();
 });
 
+// Listen for results from content script
+browser.runtime.onMessage.addListener((message) => {
+    if (message.action === 'autofillResults') {
+        console.log('[AutoFiller] Received results:', message.results);
+        displayResults(message.results);
+    }
+});
+
 // Autofill button click
 autofillBtn.addEventListener('click', async () => {
     autofillBtn.disabled = true;
@@ -48,13 +56,11 @@ autofillBtn.addEventListener('click', async () => {
     }
 
     try {
-        const response = await browser.tabs.sendMessage(tabs[0].id, {
+        await browser.tabs.sendMessage(tabs[0].id, {
             action: 'autofill',
             data: profile
         });
-
-        console.log('[AutoFiller] Response from content script:', response);
-        displayResults(response);
+        // Results will arrive via browser.runtime.onMessage listener above
     } catch (err) {
         console.error('[AutoFiller] Error sending message:', err);
         statusDiv.textContent = 'Could not reach page. Try reloading.';
@@ -62,10 +68,35 @@ autofillBtn.addEventListener('click', async () => {
     }
 });
 
+function formatFieldName(field) {
+    return field
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, s => s.toUpperCase())
+        .trim();
+}
+
 function displayResults(results) {
     statusDiv.hidden = true;
     resultsDiv.hidden = false;
     autofillBtn.disabled = false;
+
+    const filledCount = results.filled ? results.filled.length : 0;
+    const skippedCount = results.skipped ? results.skipped.length : 0;
+    const notFoundCount = results.notFound ? results.notFound.length : 0;
+    const totalDetected = filledCount + skippedCount;
+
+    // No fields detected at all
+    if (totalDetected === 0 && notFoundCount === 0) {
+        resultsDiv.innerHTML = '<p class="no-fields">No form fields detected on this page.</p>';
+        return;
+    }
+
+    // Summary line
+    const summaryDiv = document.getElementById('results-summary');
+    if (summaryDiv) {
+        summaryDiv.textContent = `${filledCount} filled, ${skippedCount} skipped, ${notFoundCount} not on page`;
+        summaryDiv.hidden = false;
+    }
 
     const filledSection = document.getElementById('filled-section');
     const skippedSection = document.getElementById('skipped-section');
@@ -79,24 +110,28 @@ function displayResults(results) {
     skippedList.innerHTML = '';
     notFoundList.innerHTML = '';
 
-    // Filled
-    if (results.filled && results.filled.length > 0) {
+    // Filled — green checkmarks
+    if (filledCount > 0) {
         filledSection.hidden = false;
         results.filled.forEach(item => {
             const li = document.createElement('li');
-            li.textContent = item.field || item;
+            li.className = 'result-item filled-item';
+            li.textContent = formatFieldName(item.field || item);
             filledList.appendChild(li);
         });
     } else {
         filledSection.hidden = true;
     }
 
-    // Skipped
-    if (results.skipped && results.skipped.length > 0) {
+    // Skipped — yellow warnings
+    if (skippedCount > 0) {
         skippedSection.hidden = false;
         results.skipped.forEach(item => {
             const li = document.createElement('li');
-            li.textContent = item.field || item;
+            li.className = 'result-item skipped-item';
+            const name = document.createElement('span');
+            name.textContent = formatFieldName(item.field || item);
+            li.appendChild(name);
             if (item.reason) {
                 const reason = document.createElement('span');
                 reason.className = 'reason';
@@ -109,12 +144,13 @@ function displayResults(results) {
         skippedSection.hidden = true;
     }
 
-    // Not found
-    if (results.notFound && results.notFound.length > 0) {
+    // Not found — grey
+    if (notFoundCount > 0) {
         notFoundSection.hidden = false;
         results.notFound.forEach(item => {
             const li = document.createElement('li');
-            li.textContent = item.field || item;
+            li.className = 'result-item not-found-item';
+            li.textContent = formatFieldName(item.field || item);
             notFoundList.appendChild(li);
         });
     } else {

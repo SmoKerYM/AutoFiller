@@ -1,10 +1,14 @@
 // AutoFiller Content Script — Message Listener
 // Detection (Step 5), Text filling (Step 6), Dropdowns (Step 7), Orchestration (Step 8)
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender) => {
     if (message.action === 'autofill') {
-        handleAutofill(message.data).then(sendResponse);
-        return true; // Keep message channel open for async response
+        // Safari doesn't reliably return async responses via sendResponse or
+        // returned Promises. Instead, send results back via runtime.sendMessage.
+        handleAutofill(message.data).then(result => {
+            browser.runtime.sendMessage({ action: 'autofillResults', results: result });
+        });
+        return Promise.resolve({ status: 'started' });
     }
 });
 

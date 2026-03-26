@@ -40,7 +40,7 @@ const GENDER_ALIASES = {
  * Ethnic group aliases for fuzzy matching.
  */
 const ETHNICITY_ALIASES = {
-    'Asian - Chinese': ['asian - chinese', 'asian chinese', 'chinese', 'east asian'],
+    'Asian - Chinese': ['asian - chinese', 'asian chinese', 'chinese', 'east asian', 'asian'],
     'Asian - Indian': ['asian - indian', 'asian indian', 'indian', 'south asian'],
     'Asian - Other': ['asian - other', 'asian other', 'asian'],
     'Black / African': ['black', 'african', 'black / african', 'african american', 'black or african american'],
@@ -441,10 +441,29 @@ async function fillCustomDropdown(triggerElement, targetText, aliases) {
     triggerElement.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     triggerElement.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
 
-    // 2. Wait for options to render
-    await waitForDropdownOptions(500);
+    // 2. If trigger is an input (typeahead/autocomplete), type a short search
+    //    term to trigger option loading (e.g., Greenhouse location search).
+    //    Use only the first word before separators to avoid over-filtering
+    //    (e.g., "Asian - Chinese" → type "Asian" so "Asian" option still shows).
+    if (triggerElement.tagName === 'INPUT') {
+        const searchTerm = targetText.split(/\s*[-–—,]\s*/)[0].trim();
+        triggerElement.focus();
+        const setter = Object.getOwnPropertyDescriptor(
+            HTMLInputElement.prototype, 'value'
+        )?.set;
+        if (setter) {
+            setter.call(triggerElement, searchTerm);
+        } else {
+            triggerElement.value = searchTerm;
+        }
+        triggerElement.dispatchEvent(new Event('input', { bubbles: true }));
+        triggerElement.dispatchEvent(new Event('change', { bubbles: true }));
+    }
 
-    // 3. Search for visible options
+    // 3. Wait for options to render (API results for typeahead dropdowns)
+    await waitForDropdownOptions(800);
+
+    // 4. Search for visible options
     const optionSelectors = [
         '[role="option"]',
         '[role="listbox"] li',
@@ -473,7 +492,7 @@ async function fillCustomDropdown(triggerElement, targetText, aliases) {
         if (matchedOption) break;
     }
 
-    // 4. Click matching option or close dropdown
+    // 5. Click matching option or close dropdown
     if (matchedOption) {
         matchedOption.click();
         return { success: true, matchedOption: matchedOption.textContent.trim() };
