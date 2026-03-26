@@ -9,7 +9,7 @@ const FIELD_PATTERNS = {
     email:        /e.?mail/i,
     phone:        /phone|mobile|tel(?:ephone)?|contact.?number/i,
     addressLine1: /address.?(line.?1|1)|street|address(?!.*(2|city|post|zip|state|country))/i,
-    city:         /city|town|municipality/i,
+    city:         /city|town|municipality|location.?\(city\)|location/i,
     postalCode:   /post.?code|zip.?code|postal/i,
     country:      /country|nation/i,
     linkedinUrl:  /linkedin|linked.?in/i,
