@@ -2,9 +2,102 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>AutoFiller — Profile Settings</title>
     <link rel="stylesheet" href="options.css">
-    <script src="options.js"></script>
 </head>
 <body>
+    <div class="container">
+        <h1>AutoFiller Profile</h1>
+        <p class="subtitle">Your saved data will be used to auto-fill job application forms.</p>
+
+        <form id="profileForm">
+            <!-- Personal Info -->
+            <fieldset>
+                <legend>Personal Info</legend>
+                <div class="field-row">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName">
+                </div>
+                <div class="field-row">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName">
+                </div>
+                <div class="field-row">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="field-row">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+            </fieldset>
+
+            <!-- Address -->
+            <fieldset>
+                <legend>Address</legend>
+                <div class="field-row">
+                    <label for="addressLine1">Address Line 1</label>
+                    <input type="text" id="addressLine1" name="addressLine1">
+                </div>
+                <div class="field-row">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city">
+                </div>
+                <div class="field-row">
+                    <label for="postalCode">Postal Code</label>
+                    <input type="text" id="postalCode" name="postalCode">
+                </div>
+                <div class="field-row">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country">
+                </div>
+            </fieldset>
+
+            <!-- Links -->
+            <fieldset>
+                <legend>Links</legend>
+                <div class="field-row">
+                    <label for="linkedinUrl">LinkedIn URL</label>
+                    <input type="url" id="linkedinUrl" name="linkedinUrl">
+                </div>
+            </fieldset>
+
+            <!-- Dropdown Responses -->
+            <fieldset>
+                <legend>Dropdown Responses</legend>
+                <div class="field-row">
+                    <label for="howDidYouHear">How did you hear about us</label>
+                    <input type="text" id="howDidYouHear" name="howDidYouHear">
+                </div>
+                <div class="field-row">
+                    <label for="gender">Gender</label>
+                    <input type="text" id="gender" name="gender">
+                </div>
+                <div class="field-row">
+                    <label for="ethnicGroup">Ethnic Group</label>
+                    <input type="text" id="ethnicGroup" name="ethnicGroup">
+                </div>
+                <div class="field-row">
+                    <label for="ageGroup">Age Group</label>
+                    <input type="text" id="ageGroup" name="ageGroup">
+                </div>
+            </fieldset>
+
+            <!-- Custom Fields -->
+            <fieldset>
+                <legend>Custom Fields</legend>
+                <p class="hint">Add site-specific fields (e.g. "Visa Status" = "No sponsorship required").</p>
+                <div id="customFieldsList"></div>
+                <button type="button" id="addCustomField" class="btn-secondary">+ Add Field</button>
+            </fieldset>
+
+            <div class="actions">
+                <button type="submit" class="btn-primary">Save Profile</button>
+                <span id="saveStatus" class="save-status"></span>
+            </div>
+        </form>
+    </div>
+
+    <script src="options.js"></script>
 </body>
 </html>
