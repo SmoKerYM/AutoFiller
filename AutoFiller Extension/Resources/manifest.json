@@ -22,7 +22,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["fieldDetector.js", "fieldFiller.js", "dropdownHandler.js", "adapters/index.js", "adapters/generic.js", "content.js"],
+      "js": ["fieldDetector.js", "fieldFiller.js", "dropdownHandler.js", "generic.js", "greenhouse.js", "workday.js", "lever.js", "index.js", "content.js"],
       "all_frames": true,
       "run_at": "document_idle"
     }

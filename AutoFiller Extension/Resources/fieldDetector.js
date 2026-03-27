@@ -6,25 +6,32 @@
 const FIELD_PATTERNS = {
     firstName:      /first.?name|given.?name|fname|prénom/i,
     lastName:       /last.?name|sur.?name|family.?name|lname/i,
+    fullName:       /full.?name|^name$|your.?name/i,
     email:          /e.?mail/i,
     phone:          /phone|mobile|tel(?:ephone)?|contact.?number/i,
     addressLine1:   /address.?(line.?1|1)|street|address(?!.*(2|city|post|zip|state|country))/i,
-    city:           /city|town|municipality|location.?\(city\)|location/i,
+    city:           /city|town|municipality|location.?\(city\)|current.?location/i,
     postalCode:     /post.?code|zip.?code|postal/i,
     country:        /country|nation/i,
     linkedinUrl:    /linkedin|linked.?in/i,
-    howDidYouHear:  /how.*(hear|find|learn|know)|referral.?source|source/i,
+    currentCompany: /current.?(company|employer)|company.?name|employer/i,
+    availability:   /availab(le|ility).*(start|begin)|when.*available|start\s*date|earliest\s*start/i,
+    noticePeriod:   /notice\s*period/i,
+    currentSalary:  /current\s*salary|present\s*salary/i,
+    salaryExpectation: /salary\s*(expectation|requirement)|expected\s*salary|desired\s*salary|salary\s*expectations/i,
+    howDidYouHear:  /how.*(hear|find|learn|know)|referral.?source|source|influenced.*decision.*apply/i,
     gender:         /(?<!trans)gender|sex(?!ual)/i,
     ethnicGroup:    /ethnic|race|ethnicity/i,
     age:            /age.?(group|range|bracket)|date.?of.?birth/i,
     // Common application questions (answered automatically)
-    workAuth:         /legally\s+authorized.*work|authorized\s+to\s+work|right\s+to\s+work/i,
-    sponsorship:      /require.*sponsor|need.*sponsor|sponsor.*require|visa\s+sponsor|will\s+you.*sponsor|immigration.*sponsor|sponsor.*immigration|sponsor.*employ|immigration.*work\s+authoriz/i,
-    workedBefore:     /have\s+you\s+(worked|been\s+employed)\s+(at|for|with)|previously\s+(worked|employed)/i,
-    veteranStatus:    /veteran|protected\s+veteran/i,
-    disabilityStatus: /disability|disabled/i,
-    privacyAck:       /privacy\s+(acknowledge?ment|policy|notice|statement)/i,
-    transgender:      /transgender|trans\s+gender|identify.*transgender/i,
+    workAuth:           /legally\s+authorized.*work|authorized\s+to\s+work|right\s+to\s+work|authorised\s+to\s+work/i,
+    sponsorship:        /require.*sponsor|need.*sponsor|sponsor.*require|visa\s+sponsor|will\s+you.*sponsor|immigration.*sponsor|sponsor.*immigration|sponsor.*employ|immigration.*work\s+authoriz|need.*sponsored|sponsored.*employment/i,
+    workedBefore:       /have\s+you\s+(worked|been\s+employed)\s+(at|for|with)|previously\s+(worked|employed)/i,
+    relatedToEmployee:  /related\s+to\s+(a\s+)?(current\s+)?employee|relative.*(current\s+)?employee|know\s+anyone.*work/i,
+    veteranStatus:      /veteran|protected\s+veteran/i,
+    disabilityStatus:   /disability|disabled/i,
+    privacyAck:         /privacy\s+(acknowledge?ment|policy|notice|statement)/i,
+    transgender:        /transgender|trans\s+gender|identify.*transgender/i,
 };
 
 /**
@@ -167,8 +174,8 @@ function detectAllFields() {
     // Question fields allow multiple elements (e.g., two sponsorship questions)
     const bestByFieldType = new Map();
     const QUESTION_FIELD_TYPES = new Set([
-        'workAuth', 'sponsorship', 'workedBefore', 'veteranStatus',
-        'disabilityStatus', 'privacyAck', 'transgender',
+        'workAuth', 'sponsorship', 'workedBefore', 'relatedToEmployee',
+        'veteranStatus', 'disabilityStatus', 'privacyAck', 'transgender',
     ]);
 
     for (const element of elements) {

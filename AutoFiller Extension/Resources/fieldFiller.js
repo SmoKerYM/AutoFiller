@@ -10,11 +10,11 @@ function fillTextInput(element, value) {
     element.dispatchEvent(new Event('focus', { bubbles: true }));
 
     // Native setter bypass — critical for React/Vue
-    const setter = Object.getOwnPropertyDescriptor(
-        HTMLInputElement.prototype, 'value'
-    )?.set || Object.getOwnPropertyDescriptor(
-        HTMLTextAreaElement.prototype, 'value'
-    )?.set;
+    // Must pick the correct prototype based on element type
+    const proto = element instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype
+        : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
 
     if (setter) {
         setter.call(element, value);
@@ -55,12 +55,18 @@ function fillDetectedFields(fieldMap, profile) {
         }
 
         // Skip question-answer fields — handled by dropdownHandler
-        const QUESTION_FIELD_TYPES = ['workAuth', 'sponsorship', 'workedBefore', 'veteranStatus', 'disabilityStatus', 'privacyAck', 'transgender'];
+        const QUESTION_FIELD_TYPES = ['workAuth', 'sponsorship', 'workedBefore', 'relatedToEmployee', 'veteranStatus', 'disabilityStatus', 'privacyAck', 'transgender'];
         if (QUESTION_FIELD_TYPES.includes(fieldType)) {
             continue;
         }
 
-        const value = profile[fieldType];
+        // Handle fullName by combining firstName + lastName
+        let value;
+        if (fieldType === 'fullName') {
+            value = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
+        } else {
+            value = profile[fieldType];
+        }
 
         // Skip if no value in profile for this field
         if (!value) {

@@ -121,6 +121,10 @@ const QUESTION_ANSWERS = {
         answerPatterns: [/^no$/i, /^no[,.\s]/i, /\bno\b/i],
         fallback: 'No',
     },
+    relatedToEmployee: {
+        answerPatterns: [/^no$/i, /^no[,.\s]/i, /\bno\b/i],
+        fallback: 'No',
+    },
 };
 
 /**

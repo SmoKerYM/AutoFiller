@@ -9,6 +9,11 @@ const DEFAULTS = {
     city: 'London',
     postalCode: 'SW8 2LR',
     country: 'United Kingdom',
+    currentCompany: '',
+    availability: 'Available immediately',
+    noticePeriod: 'Available immediately',
+    currentSalary: '',
+    salaryExpectation: '35000 - 38000',
     linkedinUrl: 'https://www.linkedin.com/in/mingwei-yan-my324',
     howDidYouHear: 'LinkedIn',
     gender: 'Male',
@@ -20,6 +25,7 @@ const DEFAULTS = {
 const FIELD_IDS = [
     'firstName', 'lastName', 'email', 'phone',
     'addressLine1', 'city', 'postalCode', 'country',
+    'currentCompany', 'availability', 'noticePeriod', 'currentSalary', 'salaryExpectation',
     'linkedinUrl',
     'howDidYouHear', 'gender', 'ethnicGroup', 'age'
 ];
